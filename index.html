@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rock Paper Scissors Game</title>
+    <style>
+        /* CSS Styles */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        header {
+            background-color: #333;
+            color: white;
+            width: 100%;
+            text-align: center;
+            padding: 20px 0;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 2.5rem;
+        }
+
+        .game-container {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            margin: 30px;
+            width: 80%;
+            max-width: 600px;
+            text-align: center;
+        }
+
+        .choices {
+            display: flex;
+            justify-content: space-around;
+            margin: 30px 0;
+        }
+
+        .choice {
+            background-color: #4CAF50;
+            border: none;
+            border-radius: 50%;
+            width: 100px;
+            height: 100px;
+            cursor: pointer;
+            transition: transform 0.2s, background-color 0.2s;
+            font-size: 3rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .choice:hover {
+            transform: scale(1.1);
+            background-color: #45a049;
+        }
+
+        .result {
+            font-size: 1.5rem;
+            margin: 20px 0;
+            min-height: 60px;
+        }
+
+        .scores {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+            font-size: 1.2rem;
+        }
+
+        .score-box {
+            background-color: #f8f8f8;
+            padding: 10px 20px;
+            border-radius: 5px;
+        }
+
+        .reset-btn {
+            background-color: #f44336;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.2s;
+        }
+
+        .reset-btn:hover {
+            background-color: #d32f2f;
+        }
+
+        .choice-display {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+        }
+
+        .choice-icon {
+            font-size: 3rem;
+            width: 100px;
+            height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #f8f8f8;
+            border-radius: 50%;
+        }
+
+        footer {
+            margin-top: auto;
+            background-color: #333;
+            color: white;
+            width: 100%;
+            text-align: center;
+            padding: 10px 0;
+        }
+
+        @media (max-width: 600px) {
+            .choices {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .choice {
+                margin: 10px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Rock Paper Scissors</h1>
+    </header>
+
+    <div class="game-container">
+        <h2>Make your choice:</h2>
+        
+        <div class="choices">
+            <button class="choice" id="rock">✊</button>
+            <button class="choice" id="paper">✋</button>
+            <button class="choice" id="scissors">✌️</button>
+        </div>
+
+        <div class="choice-display">
+            <div>
+                <p>Your choice</p>
+                <div class="choice-icon" id="player-choice">?</div>
+            </div>
+            <div>
+                <p>Computer choice</p>
+                <div class="choice-icon" id="computer-choice">?</div>
+            </div>
+        </div>
+
+        <div class="result" id="result">
+            Let's play! First to 5 wins.
+        </div>
+
+        <div class="scores">
+            <div class="score-box">
+                <p>Player: <span id="player-score">0</span></p>
+            </div>
+            <div class="score-box">
+                <p>Computer: <span id="computer-score">0</span></p>
+            </div>
+        </div>
+
+        <button class="reset-btn" id="reset">Reset Game</button>
+    </div>
+
+    <footer>
+        <p>Created with HTML, CSS, and JavaScript</p>
+    </footer>
+
+    <script>
+        // JavaScript Game Logic
+        document.addEventListener('DOMContentLoaded', () => {
+            const choices = ['✊', '✋', '✌️'];
+            const playerChoiceDisplay = document.getElementById('player-choice');
+            const computerChoiceDisplay = document.getElementById('computer-choice');
+            const resultDisplay = document.getElementById('result');
+            const playerScoreDisplay = document.getElementById('player-score');
+            const computerScoreDisplay = document.getElementById('computer-score');
+            const resetButton = document.getElementById('reset');
+            
+            let playerScore = 0;
+            let computerScore = 0;
+            let gameOver = false;
+
+            // Event listeners for choice buttons
+            document.getElementById('rock').addEventListener('click', () => playRound('✊'));
+            document.getElementById('paper').addEventListener('click', () => playRound('✋'));
+            document.getElementById('scissors').addEventListener('click', () => playRound('✌️'));
+            
+            // Reset button
+            resetButton.addEventListener('click', resetGame);
+
+            function playRound(playerChoice) {
+                if (gameOver) return;
+                
+                const computerChoice = choices[Math.floor(Math.random() * 3)];
+                
+                playerChoiceDisplay.textContent = playerChoice;
+                computerChoiceDisplay.textContent = computerChoice;
+                
+                let roundResult;
+                
+                if (playerChoice === computerChoice) {
+                    roundResult = "It's a tie!";
+                } else if (
+                    (playerChoice === '✊' && computerChoice === '✌️') ||
+                    (playerChoice === '✋' && computerChoice === '✊') ||
+                    (playerChoice === '✌️' && computerChoice === '✋')
+                ) {
+                    roundResult = "You win this round!";
+                    playerScore++;
+                } else {
+                    roundResult = "Computer wins this round!";
+                    computerScore++;
+                }
+                
+                resultDisplay.textContent = roundResult;
+                updateScores();
+                
+                if (playerScore === 5 || computerScore === 5) {
+                    endGame();
+                }
+            }
+            
+            function updateScores() {
+                playerScoreDisplay.textContent = playerScore;
+                computerScoreDisplay.textContent = computerScore;
+            }
+            
+            function endGame() {
+                gameOver = true;
+                if (playerScore > computerScore) {
+                    resultDisplay.textContent = `Congratulations! You won the game ${playerScore}-${computerScore}!`;
+                } else {
+                    resultDisplay.textContent = `Game over! Computer won ${computerScore}-${playerScore}.`;
+                }
+            }
+            
+            function resetGame() {
+                playerScore = 0;
+                computerScore = 0;
+                gameOver = false;
+                playerChoiceDisplay.textContent = '?';
+                computerChoiceDisplay.textContent = '?';
+                resultDisplay.textContent = "Let's play! First to 5 wins.";
+                updateScores();
+            }
+        });
+    </script>
+</body>
+</html>
